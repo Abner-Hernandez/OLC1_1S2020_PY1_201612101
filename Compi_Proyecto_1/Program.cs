@@ -14,14 +14,21 @@ namespace Compi_Proyecto_1
         [STAThread]
         static void Main()
         {
-            string carpeta = Application.StartupPath + "\\Images";
+            create_folder(Application.StartupPath + "\\Images");
+            create_folder(Application.StartupPath + "\\Reports");
+
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new Form1());
+        }
+        public static int last_number = -1;
+
+        static private void create_folder(string carpeta)
+        {
             if (!(Directory.Exists(carpeta)))
             {
                 Directory.CreateDirectory(carpeta);
             }
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
         }
     }
 }

@@ -286,5 +286,18 @@ namespace Compi_Proyecto_1
             }
 
         }
+
+        public int get_accept_number(Node pivot)
+        {
+            Node aux = pivot.nexts[0];
+            while (aux.nexts.Count > 0)
+            {
+                aux = aux.nexts[0];
+            }
+            if (aux.nexts.Count == 0)
+                return aux.id_node;
+            else
+                return -1;
+        }
     }
 }

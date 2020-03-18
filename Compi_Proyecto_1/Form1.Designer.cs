@@ -49,6 +49,9 @@
             this.button_graph = new System.Windows.Forms.Button();
             this.panel_image = new System.Windows.Forms.Panel();
             this.pictureBox = new System.Windows.Forms.PictureBox();
+            this.console = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.analizeLexemesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.panel_image.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
@@ -61,7 +64,7 @@
             this.toolsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(800, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(884, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menu";
             // 
@@ -115,7 +118,8 @@
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadThompsonToolStripMenuItem,
             this.saveTokensToolStripMenuItem,
-            this.saveErrorsToolStripMenuItem});
+            this.saveErrorsToolStripMenuItem,
+            this.analizeLexemesToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
@@ -130,14 +134,16 @@
             // saveTokensToolStripMenuItem
             // 
             this.saveTokensToolStripMenuItem.Name = "saveTokensToolStripMenuItem";
-            this.saveTokensToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.saveTokensToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveTokensToolStripMenuItem.Text = "Save Tokens";
+            this.saveTokensToolStripMenuItem.Click += new System.EventHandler(this.saveTokensToolStripMenuItem_Click);
             // 
             // saveErrorsToolStripMenuItem
             // 
             this.saveErrorsToolStripMenuItem.Name = "saveErrorsToolStripMenuItem";
-            this.saveErrorsToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.saveErrorsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveErrorsToolStripMenuItem.Text = "Save Errors";
+            this.saveErrorsToolStripMenuItem.Click += new System.EventHandler(this.saveErrorsToolStripMenuItem_Click);
             // 
             // openFile
             // 
@@ -148,7 +154,7 @@
             this.tabControl.Location = new System.Drawing.Point(12, 27);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(374, 337);
+            this.tabControl.Size = new System.Drawing.Size(374, 436);
             this.tabControl.TabIndex = 1;
             // 
             // label1
@@ -203,23 +209,52 @@
             this.panel_image.Controls.Add(this.pictureBox);
             this.panel_image.Location = new System.Drawing.Point(395, 71);
             this.panel_image.Name = "panel_image";
-            this.panel_image.Size = new System.Drawing.Size(393, 293);
+            this.panel_image.Size = new System.Drawing.Size(477, 392);
             this.panel_image.TabIndex = 7;
             // 
             // pictureBox
             // 
             this.pictureBox.Location = new System.Drawing.Point(0, 0);
             this.pictureBox.Name = "pictureBox";
-            this.pictureBox.Size = new System.Drawing.Size(393, 293);
+            this.pictureBox.Size = new System.Drawing.Size(477, 392);
             this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox.TabIndex = 0;
             this.pictureBox.TabStop = false;
+            // 
+            // console
+            // 
+            this.console.Location = new System.Drawing.Point(13, 484);
+            this.console.Multiline = true;
+            this.console.Name = "console";
+            this.console.ReadOnly = true;
+            this.console.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.console.Size = new System.Drawing.Size(859, 65);
+            this.console.TabIndex = 8;
+            this.console.WordWrap = false;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 466);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(45, 13);
+            this.label3.TabIndex = 9;
+            this.label3.Text = "Console";
+            // 
+            // analizeLexemesToolStripMenuItem
+            // 
+            this.analizeLexemesToolStripMenuItem.Name = "analizeLexemesToolStripMenuItem";
+            this.analizeLexemesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.analizeLexemesToolStripMenuItem.Text = "Analize Lexemes";
+            this.analizeLexemesToolStripMenuItem.Click += new System.EventHandler(this.analizeLexemesToolStripMenuItem_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(884, 561);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.console);
             this.Controls.Add(this.panel_image);
             this.Controls.Add(this.button_graph);
             this.Controls.Add(this.type_image);
@@ -264,6 +299,9 @@
         private System.Windows.Forms.Button button_graph;
         private System.Windows.Forms.Panel panel_image;
         private System.Windows.Forms.PictureBox pictureBox;
+        private System.Windows.Forms.TextBox console;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ToolStripMenuItem analizeLexemesToolStripMenuItem;
     }
 }
 

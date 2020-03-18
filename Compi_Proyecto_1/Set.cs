@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Compi_Proyecto_1
 {
-    class Interval
+    public class Interval
     {
         public char origin;
         public char destiny;
@@ -20,8 +20,8 @@ namespace Compi_Proyecto_1
     {
         String pattern;
         String lexical_component;
-        List<char> elements1;
-        Interval elements2;
+        public List<String> elements1;
+        public Interval elements2;
 
         public Set(String pattern, String lexical_component)
         {
@@ -29,45 +29,45 @@ namespace Compi_Proyecto_1
             this.lexical_component = lexical_component;
         }
 
-        public Boolean check_element(char element)
+        public string get_lexical_component()
         {
-            if (elements1 != null)
-            {
-                foreach (char data in elements1)
-                {
-                    if (element == data)
-                        return true;
-                }
-            }
-            if (elements2 != null)
-            {
-                if (elements2.origin <= element && elements2.destiny >= element)
-                    return true;
-            }
-            return false;
+            return this.lexical_component;
         }
 
         public void analize_pattern()
         {
             char character;
-            elements1 = new List<char>();
+            elements1 = new List<string>();
+            int start = 0;
             for (int i = 0; i < pattern.Length; i++)
             {
                 character = pattern.ElementAt(i);
                 if (character == ',')
                 {
-                    elements1.Add(pattern.ElementAt(i - 1));
+                    elements1.Add(pattern.Substring(start , i - start));
+                    start = i;
                 }
                 else if (character == '~')
                 {
+                    string inter1 = pattern.Substring(start, i - start);
+                    string inter2 = pattern.Substring(i + 1, (pattern.Count()-1) - i);
+                    if (inter1.Length > 1 || inter2.Length > 1)
+                        interval_numbers(inter1, inter2);
                     elements2 = new Interval(pattern.ElementAt(i - 1), pattern.ElementAt(i + 1));
                     break;
                 }
                 else if (i == pattern.Length - 1)
                 {
-                    elements1.Add(pattern.ElementAt(i));
+                    elements1.Add(pattern.Substring(start, i - start));
                 }
             }
+        }
+        public void interval_numbers(string inter1, string inter2)
+        {
+            int inter1_number = int.Parse(inter1);
+            int inter2_number = int.Parse(inter2);
+            for(int i = inter1_number; i <= inter2_number; i++)
+                elements1.Add(i.ToString());
         }
     }
 }
