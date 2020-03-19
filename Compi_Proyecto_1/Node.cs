@@ -130,6 +130,18 @@ namespace Compi_Proyecto_1
             init_node.nexts.Add(second);
             return init_node;
         }
+        public Node create_union(Node first, Node second)
+        {
+            Node aux = first.nexts[0];
+            while (aux.nexts.Count > 0)
+                aux = aux.nexts[0];
+
+            if (second.non_terminal.Equals("none"))
+                aux.nexts = second.nexts;
+            else
+                aux.nexts.Add(second);
+            return first;
+        }
 
         //create possibilities to Or
         public Node create_or(string first, string second)
@@ -148,7 +160,19 @@ namespace Compi_Proyecto_1
         {
             Node aux2 = new Node("epsilon", false);
             aux2.nexts.Add(new Node(second, false));
-            first.nexts.Add(aux2);
+
+            if (first.is_Or && first.nexts[0].nexts.Count == 0)
+                first.nexts.Add(aux2);
+            else
+            {
+                Node init_node = new Node("none", true);
+                if (first.non_terminal.Equals("none"))
+                    first.non_terminal = "epsilon";
+                init_node.nexts.Add(first);
+                init_node.nexts.Add(aux2);
+                return init_node;
+            }
+            first.is_Or = true;
             return first;
         }
         public Node create_or(string first, Node second)
@@ -162,12 +186,69 @@ namespace Compi_Proyecto_1
             if (second.is_Or && second.nexts[0].nexts.Count == 0)
             {
                 for (int i = 1; i < second.nexts.Count; i++)
+                {
+                    if(second.nexts[i].non_terminal.Equals("none"))
+                        second.nexts[i].non_terminal = "epsilon";
                     init_node.nexts.Add(second.nexts[i]);
+
+                }
             }
             else
+            {
+                if (second.non_terminal.Equals("none"))
+                    second.non_terminal = "epsilon";
                 init_node.nexts.Add(second);
+            }
 
             return init_node;
+        }
+        public Node create_or(Node first, Node second)
+        {
+            if (first.is_Or && first.nexts[0].nexts.Count == 0)
+            {
+                if (second.is_Or && second.nexts[0].nexts.Count == 0)
+                {
+                    for (int i = 1; i < second.nexts.Count; i++)
+                    {
+                        if (second.nexts[i].non_terminal.Equals("none"))
+                            second.nexts[i].non_terminal = "epsilon";
+                        first.nexts.Add(second.nexts[i]);
+                    }
+                }
+                else
+                {
+                    if (second.non_terminal.Equals("none"))
+                        second.non_terminal = "epsilon";
+                    first.nexts.Add(second);
+                }
+                first.is_Or = true;
+                return first;
+            }
+            else
+            {
+                Node init_node = new Node("none", true);
+                if(first.non_terminal.Equals("none"))
+                    first.non_terminal = "epsilon";
+                init_node.nexts.Add(first);
+
+                if (second.is_Or && second.nexts[0].nexts.Count == 0)
+                {
+                    for (int i = 1; i < second.nexts.Count; i++)
+                    {
+                        if (second.nexts[i].non_terminal.Equals("none"))
+                            second.nexts[i].non_terminal = "epsilon";
+                        init_node.nexts.Add(second.nexts[i]);
+                    }
+                }
+                else
+                {
+                    if (second.non_terminal.Equals("none"))
+                        second.non_terminal = "epsilon";
+                    init_node.nexts.Add(second);
+                }
+                return init_node;
+            }
+
         }
 
         //create possibilities to kleene lock
@@ -182,7 +263,9 @@ namespace Compi_Proyecto_1
         public Node create_Kleene_lock(Node first)
         {
             Node init_node = new Node("none", false, true, false, false,  false);
-            first.non_terminal = "epsilon";
+
+            if (first.non_terminal.Equals("none"))
+                first.non_terminal = "epsilon";
             first.end_recursive = true;
             init_node.nexts.Add(first);
 
@@ -207,7 +290,9 @@ namespace Compi_Proyecto_1
         public Node create_more_lock(Node first)
         {
             Node init_node = new Node("none", false);
-            first.non_terminal = "epsilon";
+
+            if (first.non_terminal.Equals("none"))
+                first.non_terminal = "epsilon";
             first.end_recursive = true;
             init_node.nexts.Add(first);
 
@@ -232,7 +317,9 @@ namespace Compi_Proyecto_1
         public Node create_quest_lock(Node first)
         {
             Node init_node = new Node("none", false, true, false, false, false);
-            first.non_terminal = "epsilon";
+
+            if (first.non_terminal.Equals("none"))
+                first.non_terminal = "epsilon";
             init_node.nexts.Add(first);
 
             Node aux = first;
@@ -268,6 +355,11 @@ namespace Compi_Proyecto_1
             else
             {
                 Node aux = pivot.nexts[0];
+                if (aux.get_is_or())
+                {
+                    enumerate_afn(aux, id);
+                    return;
+                }
                 while (aux.nexts.Count > 0)
                 {
                     aux.id_node = id++;

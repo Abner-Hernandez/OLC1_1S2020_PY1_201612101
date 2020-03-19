@@ -250,8 +250,10 @@ namespace Compi_Proyecto_1
                                 insert = aux.create_or(aux.non_terminal, aux1.non_terminal);
                             else if(!aux.is_a_terminal() && aux1.is_a_terminal())
                                 insert = aux.create_or(aux, aux1.non_terminal);
-                            else
+                            else if (aux.is_a_terminal() && !aux1.is_a_terminal())
                                 insert = aux.create_or(aux.non_terminal, aux1);
+                            else
+                                insert = aux.create_or(aux, aux1);
                             elements.Push(insert);
                         }
                         break;
@@ -265,8 +267,10 @@ namespace Compi_Proyecto_1
                                 insert = aux.create_union(aux.non_terminal, aux1.non_terminal);
                             else if (!aux.is_a_terminal() && aux1.is_a_terminal())
                                 insert = aux.create_union(aux, aux1.non_terminal);
-                            else
+                            else if (aux.is_a_terminal() && !aux1.is_a_terminal())
                                 insert = aux.create_union(aux.non_terminal, aux1);
+                            else
+                                insert = aux.create_union(aux, aux1);
                             elements.Push(insert);
                         }
                         break;
@@ -379,6 +383,12 @@ namespace Compi_Proyecto_1
             else
             {
                 Node aux = pivot.get_nexts()[0];
+                if(aux.get_is_or())
+                {
+                    create_afn_graph(aux, previos_id);
+                    return;
+                }
+
                 while (aux.get_nexts().Count > 0)
                 {
 
@@ -758,7 +768,7 @@ namespace Compi_Proyecto_1
                 }
                 if (ingreso == i)
                 {
-                    errors.Add(new Error("Error Lexico: '" + error + "', Token: " + name, i-column,row));
+                    errors.Add(new Error("Error Lexico: '" + error + "', Token: " + name + ", Lexeme: " + lexeme, i-column,row));
                     return "Error en la validacion del lexema: \"" + lexeme + "\" con la expresion regular: \"" + lexical_component + "\"\r\n";
                 }
                 else
