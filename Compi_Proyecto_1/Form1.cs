@@ -103,193 +103,218 @@ namespace Compi_Proyecto_1
             int row = 0;
             int previos_pointer_line = 0;
 
-            while (pointer < size_content)
+            try
             {
-                if (content.ElementAt(pointer) == ' ')
+                while (pointer < size_content)
                 {
-                    pointer += 1;
-                    continue;
-                }
-                else if (expression && content.ElementAt(pointer) == ';')
-                {
-                    expression = false;
-                    pattern = content.Substring(initial_pointer, pointer - initial_pointer);
-                    initial_pointer = pointer + 1;
-                    if (set == true)
-                        sets.Add(new Set(pattern, lexical_expression));
-                    else
-                        expressions.Add(new Regular_Expression(pattern, lexical_expression));
-                    set = false;
-                }
-                else if (!expression && content.ElementAt(pointer) == ':')
-                {
-
-                    lexical_expression = "";
-
-                    while (true)
+                    if (content.ElementAt(pointer) == ' ')
                     {
-                        if (pointer == initial_pointer || content.ElementAt(initial_pointer) == ' ')
-                            break;
-
-                        lexical_expression += content.ElementAt(initial_pointer);
-                        initial_pointer += 1;
+                        pointer += 1;
+                        continue;
                     }
-
-                    char aux = content.ElementAt(++pointer);
-                    while (aux != '"')
-                        aux = content.ElementAt(++pointer);
-
-                    int column = pointer - previos_pointer_line;
-
-                    aux = content.ElementAt(++pointer);
-                    string value = "";
-
-                    while (aux != '"' || content.Substring(pointer, 2).Equals("\\\""))
+                    else if (expression && content.ElementAt(pointer) == ';')
                     {
-                        if (!content.Substring(pointer, 2).Equals("\\\""))
-                            value += aux;
+                        expression = false;
+                        pattern = content.Substring(initial_pointer, pointer - initial_pointer);
+                        initial_pointer = pointer + 1;
+                        if (set == true)
+                            sets.Add(new Set(pattern, lexical_expression));
                         else
+                            expressions.Add(new Regular_Expression(pattern, lexical_expression));
+                        set = false;
+                    }
+                    else if (!expression && content.ElementAt(pointer) == ':')
+                    {
+
+                        lexical_expression = "";
+
+                        while (true)
                         {
-                            value += "\\\"";
+                            if (pointer == initial_pointer || content.ElementAt(initial_pointer) == ' ')
+                                break;
+
+                            lexical_expression += content.ElementAt(initial_pointer);
+                            initial_pointer += 1;
+                        }
+
+                        char aux = content.ElementAt(++pointer);
+                        while (aux != '"')
+                            aux = content.ElementAt(++pointer);
+
+                        int column = pointer - previos_pointer_line;
+
+                        aux = content.ElementAt(++pointer);
+                        string value = "";
+
+                        while (aux != '"' || content.Substring(pointer, 2).Equals("\\\""))
+                        {
+                            if (!content.Substring(pointer, 2).Equals("\\\""))
+                                value += aux;
+                            else
+                            {
+                                value += "\\\"";
+                                pointer++;
+                            }
+                            aux = content.ElementAt(++pointer);
+                        }
+                        aux = content.ElementAt(++pointer);
+                        while (aux != ';')
+                            aux = content.ElementAt(++pointer);
+                        initial_pointer = ++pointer;
+
+                        while (true)
+                        {
+                            if (pointer >= size_content - 2 || content.Substring(pointer, 2) == "\r\n")
+                                break;
+                            pointer += 1;
+                        }
+                        row++;
+                        pointer += 2;
+                        initial_pointer = pointer;
+
+                        tokens.Add(new Token(lexical_expression, value, row, column));
+                    }
+                    else if (pointer > size_content - 2)
+                    {
+                        pointer++;
+                        continue;
+                    }
+                    else if (content.Substring(pointer, 2) == "\r\n")
+                    {
+                        pointer += 2;
+                        initial_pointer = pointer;
+                        previos_pointer_line = pointer;
+                        row++;
+                        continue;
+                    }
+                    else if (content.Substring(pointer, 2).Equals("//"))
+                    {
+                        while (true)
+                        {
+                            if (content.Substring(pointer, 2) == "\r\n")
+                                break;
+                            pointer += 1;
+                        }
+                        row++;
+                        pointer += 2;
+                        initial_pointer = pointer;
+                        previos_pointer_line = pointer;
+                        continue;
+                    }
+                    else if (content.Substring(pointer, 2).Equals("<!"))
+                    {
+                        while (true)
+                        {
+                            if (content.Substring(pointer, 2).Equals("!>"))
+                                break;
+                            else if (content.Substring(pointer, 2) == "\r\n")
+                            {
+                                row++;
+                                pointer += 2;
+                                continue;
+                            }
+
                             pointer++;
                         }
-                        aux = content.ElementAt(++pointer);
-                    }
-                    aux = content.ElementAt(++pointer);
-                    while (aux != ';')
-                        aux = content.ElementAt(++pointer);
-                    initial_pointer = ++pointer;
-
-                    while (true)
-                    {
-                        if (pointer >= size_content - 2 || content.Substring(pointer, 2) == "\r\n")
-                            break;
                         pointer += 1;
+                        continue;
                     }
-                    row++;
-                    pointer += 2;
-                    initial_pointer = pointer;
+                    else if (content.Substring(pointer, 2).Equals("->") && expression == false)
+                    {
+                        expression = true;
+                        lexical_expression = "";
 
-                    tokens.Add(new Token(lexical_expression, value, row, column));
-                }
-                else if (pointer > size_content - 2)
-                {
-                    pointer++;
-                    continue;
-                }
-                else if (content.Substring(pointer, 2) == "\r\n")
-                {
-                    pointer += 2;
-                    initial_pointer = pointer;
-                    previos_pointer_line = pointer;
-                    row++;
-                    continue;
-                }
-                else if (content.Substring(pointer, 2).Equals("//"))
-                {
-                    while (true)
-                    {
-                        if (content.Substring(pointer, 2) == "\r\n")
-                            break;
-                        pointer += 1;
-                    }
-                    row++;
-                    pointer += 2;
-                    initial_pointer = pointer;
-                    previos_pointer_line = pointer;
-                    continue;
-                }
-                else if (content.Substring(pointer, 2).Equals("<!"))
-                {
-                    while (true)
-                    {
-                        if (content.Substring(pointer, 2).Equals("!>"))
-                            break;
-                        else if (content.Substring(pointer, 2) == "\r\n")
+                        while (true)
                         {
-                            row++;
-                            pointer += 2;
-                            continue;
+                            if (pointer == initial_pointer || content.ElementAt(initial_pointer) == ' ')
+                                break;
+
+                            lexical_expression += content.ElementAt(initial_pointer);
+                            initial_pointer += 1;
                         }
-
-                        pointer++;
+                        pointer += 2;
+                        while (content.ElementAt(pointer) == ' ')
+                            pointer += 1;
+                        initial_pointer = pointer;
+                        continue;
                     }
-                    pointer += 1;
-                    continue;
-                }
-                else if (content.Substring(pointer, 2).Equals("->") && expression == false)
-                {
-                    expression = true;
-                    lexical_expression = "";
-
-                    while (true)
+                    else if (pointer > size_content - 6)
                     {
-                        if (pointer == initial_pointer || content.ElementAt(initial_pointer) == ' ')
-                            break;
-
-                        lexical_expression += content.ElementAt(initial_pointer);
-                        initial_pointer += 1;
+                        pointer++;
+                        continue;
                     }
-                    pointer += 2;
-                    while (content.ElementAt(pointer) == ' ')
-                        pointer += 1;
-                    initial_pointer = pointer;
-                    continue;
-                }
-                else if (pointer > size_content - 6)
-                {
-                    pointer++;
-                    continue;
-                }
-                else if (content.Substring(pointer, 5).Equals("conj:", StringComparison.OrdinalIgnoreCase))
-                {
-                    pointer += 5;
-                    while (content.ElementAt(pointer) == ' ')
-                        pointer += 1;
-                    initial_pointer = pointer;
-                    set = true;
+                    else if (content.Substring(pointer, 5).Equals("conj:", StringComparison.OrdinalIgnoreCase))
+                    {
+                        pointer += 5;
+                        while (content.ElementAt(pointer) == ' ')
+                            pointer += 1;
+                        initial_pointer = pointer;
+                        set = true;
+                    }
+
+                    pointer += 1;
                 }
 
-                pointer += 1;
             }
-            
-            foreach (Regular_Expression reg in expressions)
+            catch (Exception ex)
             {
-                expression_regular.Items.Add(reg.get_lexical_component());
-                reg.generate_afn();
-                reg.enumerate_afn();
-                reg.create_afn_graph();
+                MessageBox.Show("Error al Leer el archivo; " + ex.ToString());
             }
-            foreach(Set set1 in sets)
+
+            try
             {
-                set1.analize_pattern();
+                foreach (Regular_Expression reg in expressions)
+                {
+                    expression_regular.Items.Add(reg.get_lexical_component());
+                    reg.generate_afn();
+                    reg.enumerate_afn();
+                    reg.create_afn_graph();
+                }
+                foreach (Set set1 in sets)
+                {
+                    set1.analize_pattern();
+                }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al Crear el AFN: " + ex.ToString());
+            }
+
             
         }
 
         private void button_graph_Click(object sender, EventArgs e)
         {
-            string expression = expression_regular.GetItemText(expression_regular.SelectedItem);
-            string ruta = Application.StartupPath + "\\Images\\";
 
-            foreach (Regular_Expression exp in expressions)
+            try
             {
-                if (exp.get_lexical_component().Equals(expression))
-                {
-                    string type_im = type_image.GetItemText(type_image.SelectedItem);
+                string expression = expression_regular.GetItemText(expression_regular.SelectedItem);
+                string ruta = Application.StartupPath + "\\Images\\";
 
-                    if(type_im.Equals("AFN"))
+                foreach (Regular_Expression exp in expressions)
+                {
+                    if (exp.get_lexical_component().Equals(expression))
                     {
-                        pictureBox.Image = new Bitmap(ruta + exp.get_lexical_component() + "_afn.jpg");
-                    }else if (type_im.Equals("AFD"))
-                    {
-                        pictureBox.Image = new Bitmap(ruta + exp.get_lexical_component() + "_afd.jpg");
-                    }
-                    else if (type_im.Equals("TRANSICIONES"))
-                    {
-                        pictureBox.Image = new Bitmap(ruta + exp.get_lexical_component() + "_transitions.jpg");
+                        string type_im = type_image.GetItemText(type_image.SelectedItem);
+
+                        if (type_im.Equals("AFN"))
+                        {
+                            pictureBox.Image = new Bitmap(ruta + exp.get_lexical_component() + "_afn.jpg");
+                        }
+                        else if (type_im.Equals("AFD"))
+                        {
+                            pictureBox.Image = new Bitmap(ruta + exp.get_lexical_component() + "_afd.jpg");
+                        }
+                        else if (type_im.Equals("TRANSICIONES"))
+                        {
+                            pictureBox.Image = new Bitmap(ruta + exp.get_lexical_component() + "_transitions.jpg");
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al mostrar la imagen: " + ex.ToString());
             }
         }
 
@@ -397,9 +422,9 @@ namespace Compi_Proyecto_1
                     {
                         console.Text += "\n" + result;
                         if (result.Substring(0, 5).Equals("Error"))
-                            tokensNonAcepted.Add(new Error("Token: " + lexeme.name + ", Value: " + lexeme.value, lexeme.column, lexeme.row));
+                            tokensNonAcepted.Add(new Error("Token: " + lexeme.name + ", Value: " + lexeme.value + ", exp: " + exp.get_lexical_component() , lexeme.column, lexeme.row));
                         else
-                            tokensAcepted.Add(new Error("Token: " + lexeme.name + ", Value: " + lexeme.value, lexeme.column, lexeme.row));
+                            tokensAcepted.Add(new Error("Token: " + lexeme.name + ", Value: " + lexeme.value + ", exp: " + exp.get_lexical_component(), lexeme.column, lexeme.row));
                     }
                 }
             }
@@ -407,19 +432,43 @@ namespace Compi_Proyecto_1
 
         private void saveTokensToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            create_xml_token();
+            try
+            {
+                create_xml_token();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al generar el reporte de tokens aceptados: " + ex.ToString());
+            }
         }
 
         private void saveErrorsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            create_xml_error();
-            create_pdf_table();
+            try
+            {
+                create_xml_error();
+                create_pdf_table();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al generar los reportes; " + ex.ToString());
+            }
+
         }
 
         private void analizeLexemesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            analize_Expressions();
-            create_xml_accepted();
+            try
+            {
+                analize_Expressions();
+                create_xml_accepted();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al analizar las entradas; " + ex.ToString());
+            }
+
         }
     }
 }

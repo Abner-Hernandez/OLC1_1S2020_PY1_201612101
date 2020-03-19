@@ -310,9 +310,18 @@ namespace Compi_Proyecto_1
             save_file(Application.StartupPath + "\\Images\\", lexical_component + "_afn");
             recursive = null;
             get_nonterminals();
-            graph_table_transitions();
-            get_accept_states();
-            graph_automaton();
+
+            try
+            {
+                graph_table_transitions();
+                get_accept_states();
+                graph_automaton();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al Crear la tabla de siguientes o el AFD: " + ex.ToString());
+            }
+            
         }
 
         public void save_file(string path, string type)
@@ -768,7 +777,7 @@ namespace Compi_Proyecto_1
                 }
                 if (ingreso == i)
                 {
-                    errors.Add(new Error("Error Lexico: '" + error + "', Token: " + name + ", Lexeme: " + lexeme, i-column,row));
+                    errors.Add(new Error("Error Lexico: '" + error + "', Token: " + name + ", Lexeme: " + lexeme + " , Exp: " + this.lexical_component, i-column,row));
                     return "Error en la validacion del lexema: \"" + lexeme + "\" con la expresion regular: \"" + lexical_component + "\"\r\n";
                 }
                 else
